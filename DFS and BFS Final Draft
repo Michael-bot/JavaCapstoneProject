@@ -1,0 +1,247 @@
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+
+/**
+ * Finds the largest file using DFS.
+ */
+public class Finder {
+
+    /**
+     * If no start location is given, the we start the search in the current dir
+     *
+     * @param args {@link String}[] start location for the largest file search.
+     */
+    public static void main(final String[] args) {
+        Path path = Paths.get(args.length < 1 ? "." : args[0]);
+        final File ex = findExtremeFile(path);
+        System.out.printf("Starting at : %s, the largest file was found here:\n%s\n its size is: %d\n",
+                path.toAbsolutePath().toString(),
+                ex.getAbsolutePath(),
+                ex.length());
+    }
+
+    /**
+     * Identifies the more extreme of two given files.
+     * Modifying this method allows to search for other extremes, like smallest, oldest, etc.
+     *
+     * @param f1 {@link File} 1st file
+     * @param f2 {@link File} 2nd file
+     * @return {@link File} the more extreme of the two given files.
+     */
+    static File extreme(final File f1, final File f2) {
+
+       
+        if (f1 == null || !f1.exists() ||  !f1.isFile() ){
+            if (f2 != null && f2.exists() && f2.isFile()) return f2;
+            else throw new IllegalArgumentException();
+        }
+
+        if (f2 == null || !f2.exists() ||  !f2.isFile() ){
+            if (f1 != null && f1.exists() && f1.isFile()) return f1;
+            else throw new IllegalArgumentException();
+        }
+
+      
+        return f1.length() > f2.length() ? f1 : f2 ;
+    }
+
+    /**
+     * DFS for the most extreme file, starting the search at a given directory path.
+     *
+     * @param p {@link Path} path to a directory
+     * @return {@link File} most extreme file in the given path
+     */
+    static File findExtremeFile(final Path p) {
+
+        File x = null; //extreme file
+        final LinkedList<File> stack = new LinkedList<>(); 
+        stack.push(p.toFile());
+       
+        while (! stack.isEmpty()){
+            File dir = stack.pop();
+            final File[] fa = dir.listFiles();
+            if (fa == null) {
+                continue;  // if null then directory is probably not accessible
+            }
+
+            for(File f : fa){
+                if(f.isDirectory()) { 
+                    stack.push(f);
+                    continue;
+                }
+                
+                if(x != null) {
+                    x = extreme(x, f);
+                }
+                else {
+                    x =  f; 
+                }
+            }
+        }
+        return x;
+    }
+}
+
+
+import org.junit.Test;
+
+
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+import static org.junit.Assert.assertEquals;
+
+
+public class FinderTest {
+
+
+    /**
+     * BFS implementation to find extreme file
+     *
+     * @param p {@link Path} starting path
+     * @return {@link File} extreme file
+     */
+    @SuppressWarnings({"unchecked"})
+    private static File findExtremeFile(final Path p) {
+        final List fileList = new ArrayList();
+        fileList.add(p.toFile());
+
+if (file != null)
+        return;
+
+
+
+final LinkedList<File> stack = new LinkedList<>(); 
+        stack.push(p.toFile());
+
+        ...
+while (!queue.isEmpty()) {
+        File currentFirst = queue.removeFirst();
+
+            final File[] fa = dir.listFiles();
+            if (fa == null) {
+                continue
+            }
+
+            for(File f : fa){
+                if(f.isDirectory()) { 
+                    stack.push(f);
+                    continue;
+                }
+              
+                if(x != null) {
+                    x = extreme(x, f);
+                }
+                else {
+                    x =  f; 
+                }
+            }
+
+
+
+        return x;
+    }
+
+
+
+
+    /**
+     * Verify that the extreme method identifies the largest etc etc. file
+     */
+    @Test
+    public void testExtreme() throws Exception {
+        // check what happens if one file is null ..
+        File f1 = null;
+        final File f2 = File.createTempFile("test2_", ".tmp");
+        f2.deleteOnExit();
+
+
+
+
+        assertEquals(f2, Finder.extreme(f1, f2));
+        assertEquals(f2, Finder.extreme(f2, f1));
+
+
+
+
+        if (f1 == null || !f1.exists() ||  !f1.isFile() ){
+            if (f2 != null && f2.exists() && f2.isFile()) return f2;
+            else throw new IllegalArgumentException();
+        }
+
+
+        ...
+
+        
+        return f1.length() > f2.length() ? f1 : f2 ;
+
+
+
+        // check what happens if one file is larger
+        // .. how to add content to a (tmp-)file:
+        // https://www.baeldung.com/java-write-to-file
+
+
+if (tmp == null) {
+        tmp.remove(f1);
+    }
+    else tmp = new LinkedList<>();
+    tmp.add(f1);
+
+
+        ...
+
+
+        assertEquals(f2, Finder.extreme(f2, f1));
+        assertEquals(f2, Finder.extreme(f1, f2));
+
+
+
+        if (f2 == null || !f2.exists() ||  !f2.isFile() ){
+            if (f1 != null && f1.exists() && f1.isFile()) return f1;
+            else throw new IllegalArgumentException();
+        }
+
+
+        //return the largest filee
+        return f1.length() > f2.length() ? f1 : f2 ;
+
+
+    }
+
+
+    /**
+     * Verify that DFS and BFS return the same result.
+     */
+    @Test
+    public void findExtremeFile() throws Exception {
+        // find a reasonable place to start the search .. or hard code is this doesn't work
+        final File f2 = File.createTempFile("test", ".tmp");
+        f2.deleteOnExit();
+
+
+        final Path p = f2.getParentFile().getParentFile().toPath();
+        final File extreme1 = Finder.findExtremeFile(p);
+        final File extreme2 = FinderTest.findExtremeFile(p);
+        assertEquals(extreme1, extreme2);
+
+
+File file1 = new File("test1.txt");
+ File file2 = new File("test2.txt");
+
+boolean compare1and2 = FileUtils.contentEquals(extreme1, extreme2);
+
+    
+
+
+    }
+}
+
+
